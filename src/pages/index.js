@@ -1,21 +1,15 @@
-import { API_URL } from "./constants";
+import dynamic from 'next/dynamic'
+import { getPortfolioValueHeader } from '../utils/portfolio';
+import { API_URL } from "../constants"
 
-const getPortfolioValueHeader = (stats) => {
-  const currencyFormatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  });
+const PortfolioChart = dynamic(() => import('../../components/Portfolio/PortfolioChart'), { ssr: false });
 
-  const ethValue = stats.average_eth.toFixed(2);
-  const usdValue = currencyFormatter.format(stats.average_usd);
+const Home = ({ collections, stats }) => {
 
-  return `${ethValue} ETH (${usdValue} USD)`;
-};
-
-const Portfolio = ({ collections, stats }) => {
   return (
     <div>
       {getPortfolioValueHeader(stats)}
+      <PortfolioChart collections={collections} />
       {collections.map((collection) => (
         <div>
           <div>
@@ -38,4 +32,4 @@ export async function getServerSideProps() {
   return { props: { collections, stats } }
 }
 
-export default Portfolio;
+export default Home;
