@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
+import { OPENSEA_API_BASE_URL } from '../constants';
 const url = require('url');
 
 export default async function handler(req, res) {
@@ -9,5 +10,7 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Error: ID must be passed' })
   }
 
-  res.status(200).json({ name: 'John Doe' })
+  const userCollections = await fetch(`${OPENSEA_API_BASE_URL}/collections?asset_owner=${ownerId}`).then((r) => r.json());
+
+  res.status(200).json(userCollections)
 }
