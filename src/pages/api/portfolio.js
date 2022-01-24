@@ -2,6 +2,7 @@
 
 import { OPENSEA_API_BASE_URL } from '../../constants';
 import { getAveragePortfolioValue } from '../../utils/portfolio';
+import { getWeightedStats } from '../../utils/api/portfolio';
 const url = require('url');
 
 export default async function handler(req, res) {
@@ -22,6 +23,9 @@ export default async function handler(req, res) {
       average_eth: getAveragePortfolioValue(collections, 'seven_day_average_price'),
       average_usd: getAveragePortfolioValue(collections, 'seven_day_average_price') * priceOfEthereum
     },
-    collections
+    collections: collections.map((collection) => ({
+      ...collection,
+      weighted_stats: getWeightedStats(collection)
+    }))
   })
 }

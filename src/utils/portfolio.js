@@ -9,11 +9,12 @@ import { subDays } from "date-fns";
  */
 export const getAveragePortfolioValue = (collections, key) => {
   return collections.reduce((acc, collection) => {
-    return acc + collection.stats[key];
+    return acc + collection.stats[key] * collection.stats.owned_asset_count;
   }, 0);
 };
 
 export const getPortfolioValueHeader = (stats) => {
+  return 'hi'
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -32,54 +33,55 @@ export const getPortfolioLength = (collections) => {
 };
 
 export const getPortfolioDataPointsSingleCollection = (collection) => {
-  const currentDayAverage = collection.stats.one_day_average_price;
-  const yesterdayAverage = currentDayAverage - collection.stats.one_day_change;
-  const lastWeekAverage = collection.stats.seven_day_average_price;
-  const previousWeekAverage =
-    lastWeekAverage - collection.stats.seven_day_change;
-  const last30DayAverage = collection.stats.thirty_day_average_price;
-  const previous30DayAverage =
-    last30DayAverage - collection.stats.thirty_day_change;
+  // const currentDayAverage = collection.stats.one_day_average_price * collection.owned_asset_count;
+  // const yesterdayAverage = (currentDayAverage - collection.stats.one_day_change) * collection.owned_asset_count;
+  // const lastWeekAverage = (collection.stats.seven_day_average_price) * collection.owned_asset_count;
+  // const previousWeekAverage =
+  //   lastWeekAverage - (collection.stats.seven_day_change) * collection.owned_asset_count;
+  // const last30DayAverage = (collection.stats.thirty_day_average_price) * collection.owned_asset_count;
+  // const previous30DayAverage =
+  //   (last30DayAverage - collection.stats.thirty_day_change) * collection.owned_asset_count;
 
-  // First five days of last week average is the week average minus the last two days, averaged
-  const firstFiveOfLastWeekAverage =
-    (lastWeekAverage * 7 - currentDayAverage - yesterdayAverage) / 5;
-  // Follow the same logic to get the initial 21 day average
-  const first23OfLast30Average =
-    (last30DayAverage * 7 - currentDayAverage - yesterdayAverage) / 23;
+  // // First five days of last week average is the week average minus the last two days, averaged
+  // const firstFiveOfLastWeekAverage =
+  //   ((lastWeekAverage * 7 - currentDayAverage - yesterdayAverage) / 5) * collection.owned_asset_count;
+  // // Follow the same logic to get the initial 21 day average
+  // const first23OfLast30Average =
+  //   ((last30DayAverage * 7 - currentDayAverage - yesterdayAverage) / 23) * collection.owned_asset_count;
 
   return [
-    {
-      x: subDays(new Date(), 45).getTime(),
-      y: previous30DayAverage,
-    },
-    {
-      x: subDays(new Date(), 18.5).getTime(),
-      y: first23OfLast30Average,
-    },
+    // Opensea thirty day average price is somehow glitched
+    // {
+    //   x: subDays(new Date(), 45).getTime(),
+    //   y: collection.weighted_stats.previous_thirty_day_average_price,
+    // },
+    // {
+    //   x: subDays(new Date(), 18.5).getTime(),
+    //   y: first23OfLast30Average,
+    // },
     {
       x: subDays(new Date(), 15).getTime(),
-      y: last30DayAverage,
+      y: collection.weighted_stats.thirty_day_average_price,
     },
     {
       x: subDays(new Date(), 10.5).getTime(),
-      y: previousWeekAverage,
+      y: collection.weighted_stats.previous_week_average_price,
     },
-    {
-      x: subDays(new Date(), 4.5).getTime(),
-      y: firstFiveOfLastWeekAverage,
-    },
+    // {
+    //   x: subDays(new Date(), 4.5).getTime(),
+    //   y: firstFiveOfLastWeekAverage,
+    // },
     {
       x: subDays(new Date(), 3.5).getTime(),
-      y: lastWeekAverage,
+      y: collection.weighted_stats.seven_day_average_price,
     },
     {
       x: subDays(new Date(), 1).getTime(),
-      y: yesterdayAverage,
+      y: collection.weighted_stats.yesterday_average_price,
     },
     {
       x: new Date().getTime(),
-      y: currentDayAverage,
+      y: collection.weighted_stats.one_day_average_price,
     },
   ];
 };
@@ -90,20 +92,15 @@ export const getPortfolioGraphOptions = (collections) => {
   const portfolioData = collections.reduce((acc, collection) => {
     const singleCollectionData =
       getPortfolioDataPointsSingleCollection(collection);
-    const weightedSingleCollectionData = singleCollectionData.map(
-      ({ x, y }) => ({
-        x,
-        y: (y * collection.owned_asset_count) / portfolioLength,
-      })
-    );
+      console.log(singleCollectionData)
 
     if (acc.length === 0) {
-      return weightedSingleCollectionData;
+      return singleCollectionData;
     }
 
     return acc.map(({ x, y }, idx) => ({
       x,
-      y: y + weightedSingleCollectionData[idx].y
+      y: y + singleCollectionData[idx].y
     }));
   }, []);
 
