@@ -4,11 +4,16 @@ import { API_URL } from "../constants"
 
 const PortfolioChart = dynamic(() => import('../components/Portfolio/PortfolioChart'), { ssr: false });
 
-const Home = ({ collections, stats }) => {
+const PortfolioValueHeader = ({ stats }) => (
+  <div className='flex'>
+    {getPortfolioValueHeader(stats)}
+  </div>
+);
 
+const Home = ({ collections, stats }) => {
   return (
     <div>
-      {getPortfolioValueHeader(stats)}
+      <PortfolioValueHeader stats={stats} />
       <PortfolioChart collections={collections} />
       {collections.map((collection) => (
         <div>
