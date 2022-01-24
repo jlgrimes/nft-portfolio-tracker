@@ -16,7 +16,11 @@ export default async function handler(req, res) {
 
   // TODO: for different currencies
   const priceOfEthereumResponse = await fetch('https://api.coinbase.com/v2/prices/ETH-USD/spot').then((r) => r.json());
-  const priceOfEthereum = await priceOfEthereumResponse.data.amount;
+  console.log(priceOfEthereumResponse)
+  const priceOfEthereum = priceOfEthereumResponse.data.amount;
+  console.log(priceOfEthereum)
+  console.log(collections)
+  console.log(getAveragePortfolioValue(collections, 'seven_day_average_price'))
 
   res.status(200).json({
     stats: {

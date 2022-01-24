@@ -4,7 +4,6 @@ import { getPortfolioGraphOptions } from "../../utils/portfolio";
 
 const PortfolioChart = ({ collections }) => {
   useEffect(() => {
-    console.log(getPortfolioGraphOptions(collections))
     var chart = new ApexCharts(
       document.querySelector("#portfolio-chart"),
       getPortfolioGraphOptions(collections)
