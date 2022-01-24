@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic'
 import { getPortfolioValueHeader } from '../utils/portfolio';
 import { API_URL } from "../constants"
 
-const PortfolioChart = dynamic(() => import('../../components/Portfolio/PortfolioChart'), { ssr: false });
+const PortfolioChart = dynamic(() => import('../components/Portfolio/PortfolioChart'), { ssr: false });
 
 const Home = ({ collections, stats }) => {
 

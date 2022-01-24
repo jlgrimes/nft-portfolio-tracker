@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import ApexCharts from 'apexcharts';
-import { getPortfolioGraphOptions } from "../../src/utils/portfolio";
+import { getPortfolioGraphOptions } from "../../utils/portfolio";
 
 const PortfolioChart = ({ collections }) => {
   useEffect(() => {

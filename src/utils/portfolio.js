@@ -113,6 +113,9 @@ export const getPortfolioGraphOptions = (collections) => {
         data: portfolioData,
       },
     ],
+    stroke: {
+      curve: 'smooth'
+    },
     xaxis: {
       type: "datetime",
     },
